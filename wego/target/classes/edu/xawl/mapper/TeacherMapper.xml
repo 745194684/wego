@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.xawl.mapper.TeacherMapper">
+	<select id="getCount" resultType="int">
+		SELECT COUNT(*) FROM teacher_info
+	</select>
+	
+	<select id="listPage" resultType="edu.xawl.pojo.Teacher">
+		select * from teacher_info 
+		<where>
+			<if test="tnumber != null and tnumber !=''">
+				TNUMBER like '%${tnumber}%'
+			</if>
+			
+			<if test="tname != null and tname !=''">
+				and tname like '%${tname}%'
+			</if>
+		</where>
+		limit #{page},#{size}
+	</select>
+	
+	<insert id="add">
+		INSERT INTO teacher_info(TNUMBER,TNAME,TPASSWORD) VALUES(#{tnumber},#{tname},#{tpassword}); 
+	</insert>
+	
+	<delete id="remove">
+		DELETE FROM teacher_info WHERE tnumber IN
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<update id="edit">
+		UPDATE TEACHER_INFO SET TNAME=#{tname},TPASSWORD=#{tpassword} WHERE TNUMBER=#{tnumber}
+	</update>
+	
+	
+	
+</mapper>

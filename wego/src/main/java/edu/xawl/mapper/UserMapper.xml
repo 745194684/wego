@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.xawl.mapper.UserMapper">
+	
+	<select id="check_tnmb_tpwd" resultType="String">
+		SELECT tname FROM teacher_info WHERE TNUMBER=#{tnumber} and TPASSWORD=#{tpassword}
+	</select>
+
+	<update id="upStept" parameterType="edu.xawl.pojo.User" >
+		INSERT INTO record_info(tnumber,tstep,up_date)
+		VALUES(#{tnumber},#{tstep},#{up_date})
+		ON DUPLICATE KEY UPDATE 
+		tstep=#{tstep}   
+	</update>
+	
+	<select id="selDayRank" resultType="edu.xawl.pojo.User">
+		SELECT tname,SUM(tstep*1) sum_step FROM teacher_info,record_info WHERE up_date=#{up_date}
+		AND teacher_info.tnumber=record_info.tnumber GROUP BY tname ORDER BY tstep * 1 DESC
+	</select>
+	
+	<select id="monthRank" resultType="edu.xawl.pojo.User">
+		SELECT tname,SUM(tstep*1) sum_step FROM teacher_info,record_info WHERE up_date LIKE '${up_date}%'
+		AND teacher_info.tnumber=record_info.tnumber  GROUP BY tname ORDER BY tstep*1 DESC
+	</select>
+	
+	<update id="userEditPwd">
+		UPDATE teacher_info SET tpassword=#{newpwd} WHERE tnumber=#{tnumber}
+	</update>
+	
+</mapper>
